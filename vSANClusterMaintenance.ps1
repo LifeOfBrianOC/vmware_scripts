@@ -23,7 +23,7 @@ Get-Module -ListAvailable VM* | Import-Module
 # Function to Connect to VI Host (vCenter or ESXi). Pass host, username & password to the function
 Function ConnectVIServer ($VIHost, $User, $Password) {
     Write-Host " "
-    Write-Host "Connecting to $vCenterFQDN..." -Foregroundcolor yellow
+    Write-Host "Connecting to $VIHost..." -Foregroundcolor yellow
     Connect-VIServer $VIHost -User $User -Password $Password | Out-Null
 	Write-Host "Connected to $VIHost..." -Foregroundcolor Green
     Write-Host "------------------------------------------------" -Foregroundcolor Green
