@@ -6,7 +6,7 @@
 
 ## User Variables ##
 $vCenterFQDN = "vcs01.domain.local"
-$vCenterUser = "administrator@vsphere.local"
+$vCenterUser = "VC_Admin@domain.local"
 $vCenterPassword = "Password123!"
 $Cluster = "MARVIN-Virtual-SAN-Cluster"
 $VMList = @("VCS01", "PSC01")
