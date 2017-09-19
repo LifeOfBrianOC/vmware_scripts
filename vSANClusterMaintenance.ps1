@@ -17,7 +17,7 @@ $VMHostPassword = "Password123!"
 
 ### DO NOT MODIFY ANYTHING BELOW THIS LINE ###
 
-# Add Required PowerCli Snappins
+# Add Required PowerCli Modules
 Get-Module -ListAvailable VM* | Import-Module
 
 # Function to Connect to VI Host (vCenter or ESXi). Pass host, username & password to the function
