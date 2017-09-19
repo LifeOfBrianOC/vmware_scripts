@@ -6,7 +6,7 @@
 
 ## User Variables ##
 $vCenterFQDN = "vcs01.domain.local"
-$vCenterUser = "VC_Admin@domain.local"
+$vCenterUser = "administrator@vsphere.local"
 $vCenterPassword = "Password123!"
 $Cluster = "MARVIN-Virtual-SAN-Cluster"
 $VMList = @("VCS01", "PSC01")
@@ -21,10 +21,10 @@ $VMHostPassword = "Password123!"
 Get-Module -ListAvailable VM* | Import-Module
 
 # Function to Connect to VI Host (vCenter or ESXi). Pass host, username & password to the function
-Function ConnectVIServer ($Host, $User, $Password) {
+Function ConnectVIServer ($VIHost, $User, $Password) {
     Write-Host " "
     Write-Host "Connecting to $vCenterFQDN..." -Foregroundcolor yellow
-    Connect-VIServer $Host -User $User -Password $Password | Out-Null
+    Connect-VIServer $VIHost -User $User -Password $Password | Out-Null
 	Write-Host "Connected to $VIHost..." -Foregroundcolor Green
     Write-Host "------------------------------------------------" -Foregroundcolor Green
 }
