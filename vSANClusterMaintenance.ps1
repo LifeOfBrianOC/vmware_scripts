@@ -143,8 +143,6 @@ Function ShutdownESXiHosts {
         Write-Host " "
         Write-Host "All ESXi Hosts shutdown.." -Foregroundcolor green
         Write-Host "------------------------------------------------" -Foregroundcolor yellow
-# Call AnyKey Function
-AnyKey
 }
 
 # Function to Start VMs in the reverse order they were powered down									
@@ -207,14 +205,6 @@ Function PollvCenter {
             Write-Host "------------------------------------------------" -Foregroundcolor Cyan
     } }
     While ($HTTP_Status -ne 200)	
-}
-
-# My ever present AnyKey function!					
-Function anyKey 
-{
-    Write-Host -NoNewline -Object 'Press any key to return to the main menu...' -Foregroundcolor Yellow
-    $null = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown')
-    Menu
 }
 
 # Function to display the main menu 
