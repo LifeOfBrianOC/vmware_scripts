@@ -12,6 +12,7 @@ $Cluster = "MARVIN-Virtual-SAN-Cluster"
 $VMList = @("VCS01", "PSC01")
 $VMHosts = @("esxi04.domain.local", "esxi05.domain.local", "esxi06.domain.local", "esxi07.domain.local")
 $VMHost = "esxi04.domain.local"
+$VMHostUser = "root"
 $VMHostPassword = "Password123!"
 
 ### DO NOT MODIFY ANYTHING BELOW THIS LINE ###
@@ -19,13 +20,18 @@ $VMHostPassword = "Password123!"
 # Add Required PowerCli Snappins
 Get-Module -ListAvailable VM* | Import-Module
 
-# Function to Connect to vCenter
-Function ConnectvCenter {
+# Function to Connect to VI Host (vCenter or ESXi). Pass host, username & password to the function
+Function ConnectVIServer ($Host, $User, $Password) {
     Write-Host " "
-    Write-Host "Connecting to vCenter $vCenterFQDN..." -Foregroundcolor yellow
-    Connect-VIServer $vCenterFQDN -User $vCenterUser -Password $vCenterPassword | Out-Null
-    Write-Host "------------------------------------------------" -Foregroundcolor yellow
+    Write-Host "Connecting to $vCenterFQDN..." -Foregroundcolor yellow
+    Connect-VIServer $Host -User $User -Password $Password | Out-Null
+	Write-Host "Connected to $VIHost..." -Foregroundcolor Green
+    Write-Host "------------------------------------------------" -Foregroundcolor Green
 }
+
+# Define DRS Levels to stop Vms from moving away from the defined host
+$PartiallyAutomated = "PartiallyAutomated"
+$FullyAutomated = "FullyAutomated"
 
 # Function to Change DRS Automation level						
 Function ChangeDRSLevel ($Level) {						
@@ -47,20 +53,6 @@ Function MoveVMs {
         Write-Host "------------------------------------------------" -Foregroundcolor yellow
     }   
     Disconnect-VIServer $vCenterFQDN -confirm:$false | Out-Null
-}
-
-# Define DRS Levels to stop Vms from moving away from the defined host
-$PartiallyAutomated = "PartiallyAutomated"
-$FullyAutomated = "FullyAutomated"
-
-
-# Function to Connect directly to the defined ESXi host to perform Vm power operations
-Function ConnectESXi {
-
-    Write-Host " "
-    Write-Host "Connecting to $VMHost" -Foregroundcolor yellow
-    Connect-VIServer $VMHost -User root -Password $VMHostPassword | Out-Null
-    Write-Host "------------------------------------------------" -Foregroundcolor yellow
 }
 
 # Function to Shutdown VMs
@@ -143,6 +135,8 @@ Function ShutdownESXiHosts {
         Write-Host " "
         Write-Host "All ESXi Hosts shutdown.." -Foregroundcolor green
         Write-Host "------------------------------------------------" -Foregroundcolor yellow
+# Call AnyKey Function
+AnyKey
 }
 
 # Function to Start VMs in the reverse order they were powered down									
@@ -230,10 +224,10 @@ Function Menu
         {
             1 
             {
-				ConnectvCenter
+				ConnectVIServer $vCenterFQDN $vCenterUser $vCenterPassword
                 ChangeDRSLevel $PartiallyAutomated
                 MoveVMs
-                ConnectESXi
+                ConnectVIServer $VMHost $VMHostUser $VMHostPassword
                 ShutdownVM
                 EnterMaintenanceMode
                 ShutdownESXiHosts   
@@ -241,10 +235,10 @@ Function Menu
             2 
             { 
 				ExitMaintenanceMode
-                ConnectESXi
+                ConnectVIServer $VMHost $VMHostUser $VMHostPassword
                 StartVMs
 				PollvCenter
-                ConnectvCenter
+                ConnectVIServer $vCenterFQDN $vCenterUser $vCenterPassword
                 ChangeDRSLevel $FullyAutomated
             }
             Q 
